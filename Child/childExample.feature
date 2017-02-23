@@ -31,7 +31,7 @@ Background:
 Scenario: withdrawing money from account with incorrect denominations
         Given my balance is £100
         When I withdraw £12
-        Then I receive no money
+        Then I receive 0
         And receive notification "Please enter an amount in multiples of £5"
 
 Scenario: withdrawing money from an account with sufficient funds
