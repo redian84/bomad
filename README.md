@@ -1,7 +1,6 @@
 # bomad
 
-# This demonstrates using source controlled BDD
-#
+# This demonstrates BDD using source controlled feature files 
 #
 #
 #
