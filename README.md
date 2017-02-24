@@ -1,6 +1,6 @@
 # bomad
 
-# This demonstrates using source controlled BDD 
+# This demonstrates using source controlled BDD
 #
 #
 #
