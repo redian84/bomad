@@ -3,59 +3,66 @@
 # Gherkin     -   Gherkin is a computer language, written in plain English, using keywords which are then interpreted by Cucumber tests
 # Comments    -   A comment in Gherin is denoted by using the # symbol. Any text after this will be ignored by the tests
 # Keywords    -   Gherkin keywords are:- Feature, Scenario, Background, Given, When, Then, And, But, Example(s), Scenario Outline
-# User story  -   A user story describes what a particular feature should do, from the perspective of the user, described in plain English
+# User story  -   A user story describes what a particular feature should do, from the perspective of the user
 
-# This describes our Feature
 Feature: Withdraw money from account
-# Here we describe our User story
-  As a child who wants to withdraw my allowance
-  I want to see how much I can withdraw
-  So that I don't go overdrawn
+  As a child
+  I want to withdraw money from my account
+  So that I can spend the money
 
-# Our Acceptance Criteria will help us write our tests. Good practice is to put our tests in the order of our Acceptance Criteria
+# Acceptance Criteria are like high level requirements / business rules. We base Acceptance Tests on ACs
+
   Acceptance Criteria
-    - I will see my available balance
-    - I am only allowed to withdraw in £5 denominations
+    - I see my available balance at login
+    - I can only withdraw in £5 denominations
     - I cannot withdraw more than my balance
-    - I will receive an alert when I have less than £10 in my account
-    - I will be prompted if I try to withdraw an amount below £5
 
-# This gives consistent context for each test Scenario
+# Acceptance Tests represent instances of your Acceptance Criteria. An Acceptance Criteria may have multiple Acceptance Tests
+# Good practice is to put Acceptance Tests in the order of our Acceptance Criteria
+
 Background:
         Given I have logged into my account
-        When my account detail is shown
-        Then I can see my available balance
-        And how much I can withdraw
 
-# These Scenarios outline our tests
-Scenario: withdrawing money from account with incorrect denominations
-        Given my balance is £100
-        When I withdraw £12
-        Then I receive 0
-        And receive notification "Please enter an amount in multiples of £5"
+Scenario: see my balance
+        And my balance is £100
+        When I check my balance
+        Then see the following message "Your balance is £100"
 
-Scenario: withdrawing money from an account with sufficient funds
-        Given my balance is £100
-        When I withdraw £30
+Scenario: attempt to withdraw money in an incorrect denomination
+        And my balance is £100
+        When I try to withdraw £12
+        Then I receive £0
+        And see the following message "Please enter an amount in multiples of £5"
+
+Scenario: attempt to withdraw more than my balance
+        And my balance is £20
+        When I try to withdraw £30
+        Then I receive £0
+        And see the folllowing message "You have insufficient funds"
+
+Scenario: successfully withdraw money
+        And my balance is £100
+        When I try to withdraw £30
         Then I receive £30
-        And receive notification "Your balance is £70"
+        And see the following message "Your balance is £70"
 
-Scenario: withdrawing money from an account with insufficient funds
-        Given my balance is £20
-        When I withdraw £30
-        Then I receive 0
-        And receive notification "You have insufficient funds"
+@manual
+Scenario: empty my account
+        And my balance is £100
+        When I try to withdraw £100
+        Then I receive £100
+        And see the following message "Your balance is £0"
 
 # This Scenario tests edge cases using a data table
 Scenario: withdrawing money from account
-        Given my balance is "<balance>"
+        And my balance is "<balance>"
         When I withdraw "<withdraw>"
         Then I receive "<receive>"
         And my remaining balance is shown as "<remaining>"
-        And receive a notification "<alert>"
+        And receive the following "<message>"
 
 # A data table can help test lots of variances for the same Scenario
-| balance | withdraw  | receive | remaining | notification |
+| balance | withdraw  | receive | remaining | message                                     |
 | 100     | 31        | 0       | 100       | "Please enter an amount in multiples of 5"  |
 | 100     | 30        | 30      | 70        | "Your balance is £70"                       |
 | 100     | 29        | 0       | 100       | "Please enter an amount in multiples of 5"  |
